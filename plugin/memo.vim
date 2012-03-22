@@ -3,45 +3,68 @@
 "VERSION:  0.9
 "LICENSE:  MIT
 
-let s:FastProject_MemoNo = 0
-let s:FastProject_MemoOpen = 0
+let g:simple_memo_PluginDir = expand('<sfile>:p:h:h').'/'
+let g:simple_memo_TemplateDir = g:simple_memo_PluginDir.'template/'
+let g:simple_memo_SubDir = g:simple_memo_PluginDir.'sub/'
+let s:simple_memo_MemoNo = 0
+let s:simple_memo_MemoOpen = 0
 
-if !exists("g:FastProject_DefaultMemo")
-    let g:FastProject_DefaultMemo = '~FastProject-MEMO~'
+if !exists("g:simple_memo_DefaultConfigDir")
+    let g:simple_memo_DefaultConfigDir = $HOME.'/.simple-memo/'
 endif
-if !exists("g:FastProject_MemoWindowSize")
-    let g:FastProject_MemoWindowSize = 'topleft 50vs'
+if !exists("g:simple_memo_DefaultMemo")
+    let g:simple_memo_DefaultMemo = '~MEMO~'
 endif
-
-let s:FastProject_DefaultMemo = g:FastProject_DefaultConfigDir.g:FastProject_DefaultMemo
-if !filereadable(s:FastProject_DefaultMemo)
-    call system('cp '.g:FastProject_TemplateDir.g:FastProject_DefaultMemo.' '.s:FastProject_DefaultMemo)
+if !exists("g:simple_memo_MemoWindowSize")
+    let g:simple_memo_MemoWindowSize = 'topleft 50vs'
 endif
 
-function! s:FPMemoOpen()
-    exec g:FastProject_MemoWindowSize." ".g:FastProject_DefaultConfigDir.g:FastProject_DefaultMemo
-    let s:FastProject_MemoOpen = 1
-    let s:FastProject_MemoNo = bufnr('%')
+" config
+if !isdirectory(g:simple_memo_DefaultConfigDir)
+    call mkdir(g:simple_memo_DefaultConfigDir)
+endif
+let s:simple_memo_DefaultMemo = g:simple_memo_DefaultConfigDir.g:simple_memo_DefaultMemo
+if !filereadable(s:simple_memo_DefaultMemo)
+    call system('cp '.g:simple_memo_TemplateDir.g:simple_memo_DefaultMemo.' '.s:simple_memo_DefaultMemo)
+endif
+
+function! s:MemoOpen()
+    exec g:simple_memo_MemoWindowSize." ".g:simple_memo_DefaultConfigDir.g:simple_memo_DefaultMemo
+    let s:simple_memo_MemoOpen = 1
+    let s:simple_memo_MemoNo = bufnr('%')
 endfunction
-function! s:FPMemoClose()
-    let s:FastProject_MemoOpen = 0
-    exec 'bw '.s:FastProject_MemoNo
+function! s:MemoClose()
+    let s:simple_memo_MemoOpen = 0
+    exec 'bw '.s:simple_memo_MemoNo
     winc p
 endfunction
 
-function! s:FPMemo()
-    if s:FastProject_MemoOpen == 0
-        call s:FPMemoOpen()
+function! s:Memo()
+    if s:simple_memo_MemoOpen == 0
+        call s:MemoOpen()
     else
-        call s:FPMemoClose()
+        call s:MemoClose()
     endif
 endfunction
 
-command! FPMemo call s:FPMemo()
+command! SMemo call s:Memo()
 
-function! s:FPSetBufMapMemo()
-    nnoremap <buffer><silent> b :FPBrowse<CR>
+function! s:URICheck(uri)
+  return escape(matchstr(a:uri, '[a-z]*:\/\/[^ >,;:]*'), '#')
+endfunction
+
+function! s:BrowseURI()
+  let uri = prutility#URICheck(getline("."))
+  if uri != ""
+    call system("! open " . uri)
+  else
+    echo "No URI found in line."
+  endif
+endfunction
+
+function! s:SetBufMapMemo()
+    nnoremap <buffer><silent> b :call <SID>BrowseURI()<CR>
     nnoremap <buffer><silent> q :bw %<CR>:winc p<CR>
 endfunction
-exec 'au BufRead '.g:FastProject_DefaultMemo.' call <SID>FPSetBufMapMemo()'
-exec 'au BufWinLeave '.g:FastProject_DefaultMemo.' call <SID>FPMemoClose()'
+exec 'au BufRead '.g:simple_memo_DefaultMemo.' call <SID>SetBufMapMemo()'
+exec 'au BufWinLeave '.g:simple_memo_DefaultMemo.' call <SID>MemoClose()'
