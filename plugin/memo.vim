@@ -28,4 +28,5 @@ endif
 
 command! SMemo call smemo#Memo()
 exec 'au BufRead '.g:simple_memo_DefaultMemo.' call smemo#SetBufMapMemo()'
+exec 'au BufRead '.g:simple_memo_DefaultMemo.' set filetype=smemo'
 exec 'au BufWinLeave '.g:simple_memo_DefaultMemo.' call smemo#MemoClose()'
