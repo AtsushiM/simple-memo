@@ -5,7 +5,6 @@
 
 let g:simple_memo_PluginDir = expand('<sfile>:p:h:h').'/'
 let g:simple_memo_TemplateDir = g:simple_memo_PluginDir.'template/'
-let g:simple_memo_SubDir = g:simple_memo_PluginDir.'sub/'
 
 if !exists("g:simple_memo_DefaultConfigDir")
     let g:simple_memo_DefaultConfigDir = $HOME.'/.simple-memo/'
