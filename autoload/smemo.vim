@@ -3,6 +3,9 @@
 "VERSION:  0.9
 "LICENSE:  MIT
 
+let s:save_cpo = &cpo
+set cpo&vim
+
 let s:simple_memo_MemoNo = 0
 let s:simple_memo_MemoOpen = 0
 
@@ -42,3 +45,5 @@ function! smemo#SetBufMapMemo()
     nnoremap <buffer><silent> b :call smemo#BrowseURI()<CR>
     nnoremap <buffer><silent> q :call smemo#MemoClose()<CR>
 endfunction
+
+let &cpo = s:save_cpo

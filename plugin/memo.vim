@@ -3,6 +3,14 @@
 "VERSION:  0.9
 "LICENSE:  MIT
 
+if exists("g:loaded_simple_memo")
+    finish
+endif
+let g:loaded_simple_memo = 1
+
+let s:save_cpo = &cpo
+set cpo&vim
+
 let g:simple_memo_PluginDir = expand('<sfile>:p:h:h').'/'
 let g:simple_memo_TemplateDir = g:simple_memo_PluginDir.'template/'
 
@@ -29,3 +37,5 @@ command! SMemo call smemo#Memo()
 exec 'au BufRead '.g:simple_memo_DefaultMemo.' call smemo#SetBufMapMemo()'
 exec 'au BufRead '.g:simple_memo_DefaultMemo.' set filetype=smemo'
 exec 'au BufWinLeave '.g:simple_memo_DefaultMemo.' call smemo#MemoClose()'
+
+let &cpo = s:save_cpo
