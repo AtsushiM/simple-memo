@@ -10,6 +10,7 @@ let g:loaded_simple_memo = 1
 
 let s:save_cpo = &cpo
 set cpo&vim
+command! SMemo call smemo#Memo()
 
 let g:simple_memo_PluginDir = expand('<sfile>:p:h:h').'/'
 let g:simple_memo_TemplateDir = g:simple_memo_PluginDir.'template/'
@@ -33,7 +34,6 @@ if !filereadable(s:simple_memo_DefaultMemo)
     call system('cp '.g:simple_memo_TemplateDir.g:simple_memo_DefaultMemo.' '.s:simple_memo_DefaultMemo)
 endif
 
-command! SMemo call smemo#Memo()
 exec 'au BufRead '.g:simple_memo_DefaultMemo.' call smemo#SetBufMapMemo()'
 exec 'au BufRead '.g:simple_memo_DefaultMemo.' set filetype=smemo'
 exec 'au BufWinLeave '.g:simple_memo_DefaultMemo.' call smemo#MemoClose()'
